@@ -47,11 +47,23 @@ public struct Hexagon : IEquatable<Hexagon>
 
     public static int GetLength(Hexagon _a) => (int)((Mathf.Abs(_a.q) + Mathf.Abs(_a.r) + Mathf.Abs(_a.s)) / 2);
     public static int Distance(Hexagon _a, Hexagon _b) => GetLength(_a - _b);
-    public static Hexagon Neighbor(Hexagon _a, int _direction) => _a + Directions[_direction];
+    public static Hexagon GetNeighbour(Hexagon _hex, int _direction) => _hex + Directions[_direction];
+    public static Hexagon[] GetNeighbours(Hexagon _hex)
+    {
+        Hexagon[] _neighbours = new Hexagon[6];
+
+        for (int i = 0; i < 6; i++)
+        {
+            _neighbours[i] = GetNeighbour(_hex, i);
+        }
+
+        return _neighbours;
+    }
 
     #endregion
 
     public int Length => GetLength(this);
+    public Hexagon[] Neighbours => GetNeighbours(this);
 
     public override int GetHashCode() => HashCode.Combine(q, r, s);
 
