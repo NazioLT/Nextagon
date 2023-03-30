@@ -27,4 +27,6 @@ public struct Orientation
 
     public static readonly Orientation LayoutFlat = new Orientation(3f / 2f, 0f, Mathf.Sqrt(3f) / 2f, Mathf.Sqrt(3f),
                 2f / 3f, 0f, -1f / 3f, Mathf.Sqrt(3f) / 3f, 0f);
+
+    public override string ToString() => $"Orientation(f0 {f0}, f1 {f1}, f2 {f2}, f3 {f3}, b0 {b0}, b1 {b1}, b2 {b2}, b3 {b3})";
 }

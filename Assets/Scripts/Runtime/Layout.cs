@@ -19,8 +19,8 @@ public struct Layout
     public static Vector2 HexagonToPixel(Layout _layout, Hexagon _hexagon)
     {
         Orientation _orientation = _layout.orientation;
-        float _x = (_orientation.f0 * _orientation.f1 * _hexagon.r) * _layout.size.x;
-        float _y = (_orientation.f2 * _orientation.f3 * _hexagon.r) * _layout.size.y;
+        float _x = (_orientation.f0 * _hexagon.q + _orientation.f1 * _hexagon.r) * _layout.size.x;
+        float _y = (_orientation.f2 * _hexagon.q + _orientation.f3 * _hexagon.r) * _layout.size.y;
 
         return new Vector2(_x, _y) + _layout.origin;
     }
