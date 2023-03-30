@@ -1,11 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void SimpleDelegate();
+
 public class HexagonGrid : MonoBehaviour
 {
+    public event SimpleDelegate onUpdateDisplay;
+
     [SerializeField] private Vector2 origin, size;
     [SerializeField, Range(1, 8)] private int layers = 1;
     [SerializeField] private HexagonCase hexagonPrefab;
+
+    public Hexagon selectedCase { private set; get; }
 
     private Dictionary<Hexagon, HexagonCase> cases = new();
 
@@ -38,17 +44,20 @@ public class HexagonGrid : MonoBehaviour
 
     public void SelectSlot(Hexagon _hex)
     {
-        Hexagon[] _neighbours = _hex.Neighbours;
+        // Hexagon[] _neighbours = _hex.Neighbours;
 
-        SetAllGridNormal();
+        // SetAllGridNormal();
 
-        cases[_hex].SelectedHighlight();
+        // cases[_hex].SelectedHighlight();
 
-        foreach (var _neighbour in _neighbours)
-        {
-            if(!cases.ContainsKey(_neighbour)) continue;
+        // foreach (var _neighbour in _neighbours)
+        // {
+        //     if (!cases.ContainsKey(_neighbour)) continue;
 
-            cases[_neighbour].NeighbourHighlight();
-        }
+        //     cases[_neighbour].NeighbourHighlight();
+        // }
+
+        selectedCase = _hex;
+        onUpdateDisplay();
     }
 }

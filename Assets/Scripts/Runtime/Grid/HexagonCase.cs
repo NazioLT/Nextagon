@@ -17,9 +17,16 @@ public class HexagonCase : MonoBehaviour
         grid = _grid;
         hexagon = _hex;
 
+        grid.onUpdateDisplay += UpdateDisplay;
+
         rectTransform.anchoredPosition = _layout.HexagonToPixel(_hex);
 
         button.onClick.AddListener(OnClick);
+    }
+
+    private void UpdateDisplay()
+    {
+        image.color = grid.selectedCase == hexagon ? Color.blue : Color.white;
     }
 
     public void NeighbourHighlight()
@@ -30,6 +37,11 @@ public class HexagonCase : MonoBehaviour
     public void ResetHighlight()
     {
         image.color = Color.white;
+    }
+
+    public void NonInteractable()
+    {
+        image.color = Color.grey;
     }
 
     public void SelectedHighlight()
