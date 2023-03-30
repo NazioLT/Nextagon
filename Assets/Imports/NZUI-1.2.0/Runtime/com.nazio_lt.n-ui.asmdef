@@ -1,0 +1,19 @@
+{
+    "name": "com.nazio_lt.n-ui",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a99df13097c3db843bfa5021ba44cefc",
+        "GUID:7bb7d4c4e3e68494dad542d50c3e5335",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

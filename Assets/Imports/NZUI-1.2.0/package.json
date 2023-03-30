@@ -1,0 +1,19 @@
+{
+    "name": "com.nazio_lt.n-ui",
+    "version": "1.2.0",
+    "displayName": "Nazio_LT UI",
+    "description": "Nazio_LT's UI extension.",
+    "unity": "2021.3",
+    "author": 
+    {
+        "name": "Henno Théo",
+        "email": "theo.henno21@gmail.com",
+        "url": "https://twitter.com/HennoTheo"
+    },
+    "dependencies": {
+        "com.nazio_lt.ncore": "1.2.2",
+        "com.nazio_lt.ntween": "1.2.0",
+        "com.unity.textmeshpro": "3.0.6"
+    },
+    "keywords": ["tool", "UI"]
+}
