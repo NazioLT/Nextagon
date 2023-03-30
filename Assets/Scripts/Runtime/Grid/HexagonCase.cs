@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using Nazio_LT.Tools.UI;
 
 public class HexagonCase : MonoBehaviour
@@ -6,6 +7,7 @@ public class HexagonCase : MonoBehaviour
     private Hexagon hexagon;
 
     [SerializeField] private NButton button;
+    [SerializeField] private Image image;
     private RectTransform rectTransform;
     private HexagonGrid grid;
 
@@ -20,8 +22,25 @@ public class HexagonCase : MonoBehaviour
         button.onClick.AddListener(OnClick);
     }
 
+    public void NeighbourHighlight()
+    {
+        image.color = Color.yellow;
+    }
+
+    public void ResetHighlight()
+    {
+        image.color = Color.white;
+    }
+
+    public void SelectedHighlight()
+    {
+        image.color = Color.blue;
+    }
+
     private void OnClick()
     {
         print("Click on : " + hexagon);
+
+        grid.SelectSlot(hexagon);
     }
 }

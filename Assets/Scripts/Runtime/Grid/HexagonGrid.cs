@@ -28,8 +28,27 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
+    private void SetAllGridNormal()
+    {
+        foreach (var _case in cases.Values)
+        {
+            _case.ResetHighlight();
+        }
+    }
+
     public void SelectSlot(Hexagon _hex)
     {
+        Hexagon[] _neighbours = _hex.Neighbours;
 
+        SetAllGridNormal();
+
+        cases[_hex].SelectedHighlight();
+
+        foreach (var _neighbour in _neighbours)
+        {
+            if(!cases.ContainsKey(_neighbour)) continue;
+
+            cases[_neighbour].NeighbourHighlight();
+        }
     }
 }
