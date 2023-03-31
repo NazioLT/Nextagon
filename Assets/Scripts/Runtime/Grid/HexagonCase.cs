@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using Nazio_LT.Tools.UI;
 using Nazio_LT.Tools.NTween;
 using TMPro;
-using System.Collections;
 
 public class HexagonCase : MonoBehaviour
 {
@@ -39,13 +38,20 @@ public class HexagonCase : MonoBehaviour
         number++;
     }
 
+    public int Kill()
+    {
+        gameObject.SetActive(false);
+
+        return number;
+    }
+
     public float MoveTo(Hexagon _hex)
     {
         hexagon = _hex;
         Vector2 _origin = rectTransform.anchoredPosition;
         Vector2 _target = layout.HexagonToPixel(_hex);
 
-        if(Vector2.Distance(_origin, _target) < 0.03f) return 0f;//No Anim
+        if (Vector2.Distance(_origin, _target) < 0.03f) return 0f;//No Anim
 
         float _animationTime = 0.5f;
 
@@ -57,22 +63,17 @@ public class HexagonCase : MonoBehaviour
         return _animationTime;
     }
 
-    public float Respawn(float _originY)
+    public float Respawn(float _originY, int _number)
     {
         gameObject.SetActive(true);
+
+        number = _number;
+        numberText.text = number.ToString();
+
         image.color = Color.white;
+        rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, _originY);
 
-        Vector2 _origin = new Vector2(rectTransform.anchoredPosition.x, _originY);
-        Vector2 _target = layout.HexagonToPixel(hexagon);
-
-        float _animationTime = 0.5f;
-
-        NTweening.NTBuild((_t) =>
-        {
-            rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
-        }, _animationTime).StartTween();
-
-        return _animationTime;
+        return MoveTo(hexagon);
     }
 
     private void UpdateDisplay()

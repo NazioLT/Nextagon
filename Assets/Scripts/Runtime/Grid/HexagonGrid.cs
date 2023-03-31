@@ -20,44 +20,15 @@ public class HexagonGrid : MonoBehaviour
     private Dictionary<Hexagon, HexagonCase> cases = new();
     private List<Hexagon> gridCoords = new();
 
+    private RandomBag bag;
+
+    private const int MAXSTARTNUMBER = 3;
+
     private void Awake()
     {
         CreateGrid();
 
         SelectAllOne();
-    }
-
-    private void CreateGrid()
-    {
-        Layout _layout = new Layout(Orientation.LayoutFlat, size, origin);
-
-        for (int q = -layers; q <= layers; q++)
-        {
-            int _r1 = Mathf.Max(-layers, -q - layers);
-            int _r2 = Mathf.Min(layers, -q + layers);
-            for (int r = _r1; r <= _r2; r++)
-            {
-                Hexagon _hex = new Hexagon(q, r);
-                HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
-
-                _case.Init(this, _hex, _layout, Random.Range(1, 4));
-                cases.Add(_hex, _case);
-                gridCoords.Add(_hex);
-            }
-        }
-    }
-
-    private void SelectAllOne()
-    {
-        pathCases = new();
-        selectedCase = null;
-        selectableCases = new();
-        foreach (var _case in cases.Values)
-        {
-            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
-        }
-
-        onUpdateDisplay();
     }
 
     public void Undo()
@@ -73,6 +44,38 @@ public class HexagonGrid : MonoBehaviour
         pathCases.Remove(_lastPathCaseID);
 
         MakeNeighboursSelectables();
+    }
+
+    public void SelectSlot(HexagonCase _case)
+    {
+        if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
+
+        if (_case == selectedCase && pathCases.Count > 0)//Confirm
+        {
+            StartCoroutine(EndTurn());
+            return;
+        }
+
+        if (selectedCase) pathCases.Add(selectedCase.Hexagon);
+        selectedCase = _case;
+        Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
+
+        MakeNeighboursSelectables();
+    }
+
+    private IEnumerator EndTurn()
+    {
+        foreach (Hexagon _hex in pathCases)
+        {
+            bag.Add(cases[_hex].Kill());//Remet le chiffre dans le "sac"
+        }
+
+        selectedCase.NextLevel();
+
+        yield return StartCoroutine(MakeCaseFalling());
+        SelectAllOne();
+
+        onUpdateDisplay();
     }
 
     private IEnumerator MakeCaseFalling()
@@ -125,43 +128,11 @@ public class HexagonGrid : MonoBehaviour
 
         foreach (var _case in _destroyedCases)
         {
-            _case.Respawn(500f);
+            _case.Respawn(500f, bag.PickRandom());
             yield return new WaitForSeconds(0.25f);
         }
 
         yield return new WaitForSeconds(0.25f);
-    }
-
-    public void SelectSlot(HexagonCase _case)
-    {
-        if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
-
-        if (_case == selectedCase && pathCases.Count > 0)//Confirm
-        {
-            StartCoroutine(EndTurn());
-            return;
-        }
-
-        if (selectedCase) pathCases.Add(selectedCase.Hexagon);
-        selectedCase = _case;
-        Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
-
-        MakeNeighboursSelectables();
-    }
-
-    private IEnumerator EndTurn()
-    {
-        foreach (Hexagon _hex in pathCases)
-        {
-            cases[_hex].gameObject.SetActive(false);
-        }
-
-        selectedCase.NextLevel();
-
-        yield return StartCoroutine(MakeCaseFalling());
-        SelectAllOne();
-
-        onUpdateDisplay();
     }
 
     private void MakeNeighboursSelectables(bool _updateDisplay = true)
@@ -178,5 +149,44 @@ public class HexagonGrid : MonoBehaviour
         }
 
         if (_updateDisplay) onUpdateDisplay();
+    }
+
+    private void CreateGrid()
+    {
+        Layout _layout = new Layout(Orientation.LayoutFlat, size, origin);
+
+        for (int q = -layers; q <= layers; q++)
+        {
+            int _r1 = Mathf.Max(-layers, -q - layers);
+            int _r2 = Mathf.Min(layers, -q + layers);
+            for (int r = _r1; r <= _r2; r++)
+            {
+                Hexagon _hex = new Hexagon(q, r);
+                HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
+
+                cases.Add(_hex, _case);
+                gridCoords.Add(_hex);
+            }
+        }
+
+        bag = new RandomBag(1, MAXSTARTNUMBER + 1, cases.Count);//+1 car exclusive
+
+        foreach (var _case in cases)
+        {
+            _case.Value.Init(this, _case.Key, _layout, bag.PickRandom());
+        }
+    }
+
+    private void SelectAllOne()
+    {
+        pathCases = new();
+        selectedCase = null;
+        selectableCases = new();
+        foreach (var _case in cases.Values)
+        {
+            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
+        }
+
+        onUpdateDisplay();
     }
 }
