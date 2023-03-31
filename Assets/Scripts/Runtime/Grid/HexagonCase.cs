@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Nazio_LT.Tools.UI;
+using Nazio_LT.Tools.NTween;
 using TMPro;
 
 public class HexagonCase : MonoBehaviour
 {
     private Hexagon hexagon;
+    private Layout layout;
     private int number;
 
     [SerializeField] private NButton button;
@@ -20,10 +22,13 @@ public class HexagonCase : MonoBehaviour
         grid = _grid;
         hexagon = _hex;
         number = _number;
+        layout= _layout;
 
         grid.onUpdateDisplay += UpdateDisplay;
-        rectTransform.anchoredPosition = _layout.HexagonToPixel(_hex);
+        rectTransform.anchoredPosition = layout.HexagonToPixel(_hex);
         button.onClick.AddListener(OnClick);
+
+        name = hexagon.ToString();
 
         UpdateDisplay();
     }
@@ -31,6 +36,18 @@ public class HexagonCase : MonoBehaviour
     public void NextLevel()
     {
         number++;
+    }
+
+    public void MoveTo(Hexagon _hex)
+    {
+        hexagon = _hex;
+        Vector2 _origin = rectTransform.anchoredPosition;
+        Vector2 _target = layout.HexagonToPixel(_hex);
+
+        NTweening.NTBuild((_t) => 
+        {
+            rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
+        }, 0.5f).StartTween();
     }
 
     public void HasBotCases(bool _value)

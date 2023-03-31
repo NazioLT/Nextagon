@@ -17,6 +17,7 @@ public class HexagonGrid : MonoBehaviour
     public List<Hexagon> pathCases { private set; get; } = new();
 
     private Dictionary<Hexagon, HexagonCase> cases = new();
+    private List<Hexagon> gridCoords = new();
 
     private void Awake()
     {
@@ -40,6 +41,7 @@ public class HexagonGrid : MonoBehaviour
 
                 _case.Init(this, _hex, _layout, Random.Range(1, 4));
                 cases.Add(_hex, _case);
+                gridCoords.Add(_hex);
             }
         }
     }
@@ -74,27 +76,28 @@ public class HexagonGrid : MonoBehaviour
 
     private void MakeCaseFalling()
     {
-        foreach (var _cases in cases)
+        foreach (var _coord in gridCoords)
         {
-            if(_cases.Value.gameObject.activeSelf == false) continue;
+            if(cases[_coord].gameObject.activeSelf == false) continue;
 
-            Hexagon _hex = _cases.Key;
-            Hexagon _botHex = _hex.Neighbours[2];
+            Hexagon _botCoords = _coord.Neighbours[2];
 
-            bool _botIsOutOfGrid = !cases.ContainsKey(_botHex);
+            bool _botIsOutOfGrid = !cases.ContainsKey(_botCoords);
 
             if(_botIsOutOfGrid) continue;
 
-            bool _botIsHere = cases[_botHex].gameObject.activeSelf;
+            bool _botIsHere = cases[_botCoords].gameObject.activeSelf;
 
             // print(cases[_botHex].name);
-            _cases.Value.HasBotCases(_botIsHere);
-            // _cases.Value.HasBotCases(_botHex.Length <= layers && cases[_botHex] != null);
-        }
-        // for (int r = -layers; r <= layers; r++)//De bas en haut
-        // {
+            if(!_botIsHere)
+            {
+                HexagonCase _currentCase = cases[_coord];
+                cases[_coord] = cases[_botCoords];
+                cases[_botCoords] = _currentCase;
 
-        // }
+                _currentCase.MoveTo(_botCoords);
+            }
+        }
     }
 
     public void SelectSlot(HexagonCase _case)
