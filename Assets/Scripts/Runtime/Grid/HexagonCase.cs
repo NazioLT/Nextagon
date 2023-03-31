@@ -28,6 +28,11 @@ public class HexagonCase : MonoBehaviour
         UpdateDisplay();
     }
 
+    public void NextLevel()
+    {
+        number++;
+    }
+
     private void UpdateDisplay()
     {
         numberText.text = number.ToString();
@@ -35,14 +40,10 @@ public class HexagonCase : MonoBehaviour
         //Case Color
         Color _caseColor = Color.white;
         if (grid.selectedCase == this) _caseColor = Color.blue;
-        else if(grid.selectableCases.Contains(hexagon)) _caseColor = Color.yellow;
+        else if (grid.pathCases.Contains(hexagon)) _caseColor = Color.cyan;
+        else if (grid.selectableCases.Contains(hexagon)) _caseColor = Color.yellow;
 
         image.color = _caseColor;
-    }
-
-    public void ResetHighlight()
-    {
-        image.color = Color.white;
     }
 
     private void OnClick()
@@ -50,6 +51,11 @@ public class HexagonCase : MonoBehaviour
         print("Click on : " + hexagon);
 
         grid.SelectSlot(this);
+    }
+
+    private void OnDestroy()
+    {
+        grid.onUpdateDisplay -= UpdateDisplay;
     }
 
     public int Number => number;

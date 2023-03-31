@@ -13,7 +13,7 @@ public class HexagonGrid : MonoBehaviour
 
     public HexagonCase selectedCase { private set; get; } = null;
     public List<Hexagon> selectableCases { private set; get; } = new();
-    public List<Hexagon> highlightedCases { private set; get; } = new();
+    public List<Hexagon> pathCases { private set; get; } = new();
 
     private Dictionary<Hexagon, HexagonCase> cases = new();
 
@@ -21,13 +21,7 @@ public class HexagonGrid : MonoBehaviour
     {
         CreateGrid();
 
-        selectableCases = new();
-        foreach (var _case in cases.Values)
-        {
-            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
-        }
-
-        onUpdateDisplay();
+        SelectAllOne();
     }
 
     private void CreateGrid()
@@ -49,28 +43,50 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
-    private void SetAllGridNormal()
+    private void SelectAllOne()
     {
+        pathCases = new();
+        selectedCase = null;
+        selectableCases = new();
         foreach (var _case in cases.Values)
         {
-            _case.ResetHighlight();
+            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
         }
+
+        onUpdateDisplay();
     }
 
     public void SelectSlot(HexagonCase _case)
     {
+        if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
+
+        if (_case == selectedCase && pathCases.Count > 0)//Confirm
+        {
+            foreach (Hexagon _hex in pathCases)
+            {
+                Destroy(cases[_hex].gameObject);
+            }
+
+            selectedCase.NextLevel();
+
+            SelectAllOne();
+
+            onUpdateDisplay();
+            return;
+        }
+
+        if (selectedCase) pathCases.Add(selectedCase.Hexagon);
         selectedCase = _case;
         Hexagon[] _neighbours = _case.Hexagon.Neighbours;
         selectableCases = new();
 
         foreach (Hexagon _neighbour in _neighbours)
-        {   
-            if(cases.ContainsKey(_neighbour) && cases[_neighbour].Number == _case.Number + 1)
+        {
+            if (cases.ContainsKey(_neighbour) && cases[_neighbour].Number == _case.Number + 1)
             {
                 selectableCases.Add(_neighbour);
             }
         }
-        // highlightedCases = new(_hex.Neighbours);
 
         onUpdateDisplay();
     }
