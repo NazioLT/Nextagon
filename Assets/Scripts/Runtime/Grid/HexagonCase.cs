@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Nazio_LT.Tools.UI;
 using Nazio_LT.Tools.NTween;
 using TMPro;
+using System.Collections;
 
 public class HexagonCase : MonoBehaviour
 {
@@ -38,37 +39,41 @@ public class HexagonCase : MonoBehaviour
         number++;
     }
 
-    public void MoveTo(Hexagon _hex)
+    public float MoveTo(Hexagon _hex)
     {
         hexagon = _hex;
         Vector2 _origin = rectTransform.anchoredPosition;
         Vector2 _target = layout.HexagonToPixel(_hex);
 
+        if(Vector2.Distance(_origin, _target) < 0.03f) return 0f;//No Anim
+
+        float _animationTime = 0.5f;
+
         NTweening.NTBuild((_t) =>
         {
             rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
-        }, 3).StartTween();
+        }, _animationTime).StartTween();
+
+        return _animationTime;
     }
 
-    public void Respawn(float _originY)
+    public float Respawn(float _originY)
     {
         gameObject.SetActive(true);
+        image.color = Color.white;
 
         Vector2 _origin = new Vector2(rectTransform.anchoredPosition.x, _originY);
         Vector2 _target = layout.HexagonToPixel(hexagon);
 
+        float _animationTime = 0.5f;
+
         NTweening.NTBuild((_t) =>
         {
             rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
-        }, 3).StartTween();
-    }
+        }, _animationTime).StartTween();
 
-    public void HasBotCases(bool _value)
-    {
-        image.color = _value ? Color.green : Color.red;
+        return _animationTime;
     }
-
-    public void SetColor(Color _color) => image.color = _color;
 
     private void UpdateDisplay()
     {
@@ -80,15 +85,10 @@ public class HexagonCase : MonoBehaviour
         else if (grid.selectableCases.Contains(hexagon)) _caseColor = Color.yellow;
 
         image.color = _caseColor;
-
-        // numberText.text = hexagon.ToString().Substring(7);
-        // image.color = Color.Lerp(Color.white, Color.red, Mathf.InverseLerp(-2f, 2f, hexagon.r));
     }
 
     private void OnClick()
     {
-        print("Click on : " + hexagon);
-
         grid.SelectSlot(this);
     }
 

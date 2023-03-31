@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Nazio_LT.Tools.Core;
 
@@ -74,7 +75,7 @@ public class HexagonGrid : MonoBehaviour
         MakeNeighboursSelectables();
     }
 
-    private void MakeCaseFalling()
+    private IEnumerator MakeCaseFalling()
     {
         List<HexagonCase> _destroyedCases = new();
 
@@ -125,7 +126,10 @@ public class HexagonGrid : MonoBehaviour
         foreach (var _case in _destroyedCases)
         {
             _case.Respawn(500f);
+            yield return new WaitForSeconds(0.25f);
         }
+
+        yield return new WaitForSeconds(0.25f);
     }
 
     public void SelectSlot(HexagonCase _case)
@@ -134,17 +138,7 @@ public class HexagonGrid : MonoBehaviour
 
         if (_case == selectedCase && pathCases.Count > 0)//Confirm
         {
-            foreach (Hexagon _hex in pathCases)
-            {
-                cases[_hex].gameObject.SetActive(false);
-            }
-
-            selectedCase.NextLevel();
-
-            MakeCaseFalling();
-            SelectAllOne();
-
-            onUpdateDisplay();
+            StartCoroutine(EndTurn());
             return;
         }
 
@@ -153,6 +147,21 @@ public class HexagonGrid : MonoBehaviour
         Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
 
         MakeNeighboursSelectables();
+    }
+
+    private IEnumerator EndTurn()
+    {
+        foreach (Hexagon _hex in pathCases)
+        {
+            cases[_hex].gameObject.SetActive(false);
+        }
+
+        selectedCase.NextLevel();
+
+        yield return StartCoroutine(MakeCaseFalling());
+        SelectAllOne();
+
+        onUpdateDisplay();
     }
 
     private void MakeNeighboursSelectables(bool _updateDisplay = true)
