@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Nazio_LT.Tools.Core;
 
 public delegate void SimpleDelegate();
 
@@ -56,6 +57,23 @@ public class HexagonGrid : MonoBehaviour
         onUpdateDisplay();
     }
 
+    public void Undo()
+    {
+        if (pathCases.Count == 0)
+        {
+            SelectAllOne();
+            return;
+        }
+
+        Hexagon _lastPathCaseID = pathCases.Last();
+        selectedCase = cases[_lastPathCaseID];
+        pathCases.Remove(_lastPathCaseID);
+
+        MakeNeighboursSelectables();
+
+        onUpdateDisplay();
+    }
+
     public void SelectSlot(HexagonCase _case)
     {
         if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
@@ -77,17 +95,22 @@ public class HexagonGrid : MonoBehaviour
 
         if (selectedCase) pathCases.Add(selectedCase.Hexagon);
         selectedCase = _case;
-        Hexagon[] _neighbours = _case.Hexagon.Neighbours;
+        MakeNeighboursSelectables();
+
+        onUpdateDisplay();
+    }
+
+    private void MakeNeighboursSelectables()
+    {
+        Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
         selectableCases = new();
 
         foreach (Hexagon _neighbour in _neighbours)
         {
-            if (cases.ContainsKey(_neighbour) && cases[_neighbour].Number == _case.Number + 1)
+            if (cases.ContainsKey(_neighbour) && cases[_neighbour].Number == selectedCase.Number + 1)
             {
                 selectableCases.Add(_neighbour);
             }
         }
-
-        onUpdateDisplay();
     }
 }
