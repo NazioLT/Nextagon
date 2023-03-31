@@ -12,6 +12,7 @@ public class HexagonGrid : MonoBehaviour
     [SerializeField] private HexagonCase hexagonPrefab;
 
     public Hexagon selectedCase { private set; get; }
+    public List<Hexagon> highlightedCases { private set; get; }
 
     private Dictionary<Hexagon, HexagonCase> cases = new();
 
@@ -58,6 +59,8 @@ public class HexagonGrid : MonoBehaviour
         // }
 
         selectedCase = _hex;
+        highlightedCases = new(_hex.Neighbours);
+
         onUpdateDisplay();
     }
 }

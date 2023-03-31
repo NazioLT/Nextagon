@@ -26,27 +26,16 @@ public class HexagonCase : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        image.color = grid.selectedCase == hexagon ? Color.blue : Color.white;
-    }
+        Color _caseColor = Color.white;
+        if(grid.selectedCase == hexagon) _caseColor = Color.blue;
+        else if (grid.highlightedCases.Contains(hexagon)) _caseColor = Color.yellow;
 
-    public void NeighbourHighlight()
-    {
-        image.color = Color.yellow;
+        image.color = _caseColor;
     }
 
     public void ResetHighlight()
     {
         image.color = Color.white;
-    }
-
-    public void NonInteractable()
-    {
-        image.color = Color.grey;
-    }
-
-    public void SelectedHighlight()
-    {
-        image.color = Color.blue;
     }
 
     private void OnClick()
