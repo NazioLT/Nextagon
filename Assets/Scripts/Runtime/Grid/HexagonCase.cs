@@ -33,17 +33,26 @@ public class HexagonCase : MonoBehaviour
         number++;
     }
 
+    public void HasBotCases(bool _value)
+    {
+        image.color = _value ? Color.green : Color.red;
+    }
+
+    public void SetColor(Color _color) => image.color = _color;
+
     private void UpdateDisplay()
     {
         numberText.text = number.ToString();
 
-        //Case Color
         Color _caseColor = Color.white;
         if (grid.selectedCase == this) _caseColor = Color.blue;
         else if (grid.pathCases.Contains(hexagon)) _caseColor = Color.cyan;
         else if (grid.selectableCases.Contains(hexagon)) _caseColor = Color.yellow;
 
         image.color = _caseColor;
+
+        // numberText.text = hexagon.ToString().Substring(7);
+        // image.color = Color.Lerp(Color.white, Color.red, Mathf.InverseLerp(-2f, 2f, hexagon.r));
     }
 
     private void OnClick()

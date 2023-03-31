@@ -70,8 +70,31 @@ public class HexagonGrid : MonoBehaviour
         pathCases.Remove(_lastPathCaseID);
 
         MakeNeighboursSelectables();
+    }
 
-        onUpdateDisplay();
+    private void MakeCaseFalling()
+    {
+        foreach (var _cases in cases)
+        {
+            if(_cases.Value.gameObject.activeSelf == false) continue;
+
+            Hexagon _hex = _cases.Key;
+            Hexagon _botHex = _hex.Neighbours[2];
+
+            bool _botIsOutOfGrid = !cases.ContainsKey(_botHex);
+
+            if(_botIsOutOfGrid) continue;
+
+            bool _botIsHere = cases[_botHex].gameObject.activeSelf;
+
+            // print(cases[_botHex].name);
+            _cases.Value.HasBotCases(_botIsHere);
+            // _cases.Value.HasBotCases(_botHex.Length <= layers && cases[_botHex] != null);
+        }
+        // for (int r = -layers; r <= layers; r++)//De bas en haut
+        // {
+
+        // }
     }
 
     public void SelectSlot(HexagonCase _case)
@@ -82,25 +105,26 @@ public class HexagonGrid : MonoBehaviour
         {
             foreach (Hexagon _hex in pathCases)
             {
-                Destroy(cases[_hex].gameObject);
+                cases[_hex].gameObject.SetActive(false);
             }
 
             selectedCase.NextLevel();
 
-            SelectAllOne();
+            MakeCaseFalling();
+            // SelectAllOne();
 
-            onUpdateDisplay();
+            // onUpdateDisplay();
             return;
         }
 
         if (selectedCase) pathCases.Add(selectedCase.Hexagon);
         selectedCase = _case;
-        MakeNeighboursSelectables();
+        Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
 
-        onUpdateDisplay();
+        MakeNeighboursSelectables();
     }
 
-    private void MakeNeighboursSelectables()
+    private void MakeNeighboursSelectables(bool _updateDisplay = true)
     {
         Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
         selectableCases = new();
@@ -112,5 +136,7 @@ public class HexagonGrid : MonoBehaviour
                 selectableCases.Add(_neighbour);
             }
         }
+
+        if (_updateDisplay) onUpdateDisplay();
     }
 }
