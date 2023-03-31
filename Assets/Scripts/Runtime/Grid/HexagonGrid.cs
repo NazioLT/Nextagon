@@ -76,27 +76,55 @@ public class HexagonGrid : MonoBehaviour
 
     private void MakeCaseFalling()
     {
-        foreach (var _coord in gridCoords)
+        List<HexagonCase> _destroyedCases = new();
+
+        for (int q = -layers; q <= layers; q++)//Couche par couche en partant du bas
         {
-            if(cases[_coord].gameObject.activeSelf == false) continue;
-
-            Hexagon _botCoords = _coord.Neighbours[2];
-
-            bool _botIsOutOfGrid = !cases.ContainsKey(_botCoords);
-
-            if(_botIsOutOfGrid) continue;
-
-            bool _botIsHere = cases[_botCoords].gameObject.activeSelf;
-
-            // print(cases[_botHex].name);
-            if(!_botIsHere)
+            foreach (var _coord in gridCoords)//Check toutes les cases
             {
-                HexagonCase _currentCase = cases[_coord];
-                cases[_coord] = cases[_botCoords];
-                cases[_botCoords] = _currentCase;
+                if (_coord.q != q) continue;//qui sont a la bonne couche
 
-                _currentCase.MoveTo(_botCoords);
+                if (cases[_coord].gameObject.activeSelf == false)//Si vide
+                {
+                    _destroyedCases.Add(cases[_coord]);
+                    continue;
+                }
+
+                Hexagon _currentCoord = _coord;
+                Hexagon _botCoords = _currentCoord.Neighbours[2];
+
+                HexagonCase _currentCase = cases[_coord];
+
+                while (true)//Bot out of grid
+                {
+                    bool _botOutOfGrid = !cases.ContainsKey(_botCoords);
+
+                    if (_botOutOfGrid) break;//Case en dessous
+
+                    bool _botIsActive = cases[_botCoords].gameObject.activeSelf;
+
+                    if (_botIsActive) break;
+
+                    //Switch
+                    HexagonCase _botCase = cases[_botCoords];
+
+                    _currentCase.Hexagon = _botCoords;
+                    _botCase.Hexagon = _currentCoord;
+
+                    cases[_currentCoord] = _botCase;
+                    cases[_botCoords] = _currentCase;
+
+                    _currentCoord = _botCoords;
+                    _botCoords = _currentCoord.Neighbours[2];
+                }
+
+                _currentCase.MoveTo(_currentCoord);
             }
+        }
+
+        foreach (var _case in _destroyedCases)
+        {
+            _case.Respawn(500f);
         }
     }
 
@@ -114,9 +142,9 @@ public class HexagonGrid : MonoBehaviour
             selectedCase.NextLevel();
 
             MakeCaseFalling();
-            // SelectAllOne();
+            SelectAllOne();
 
-            // onUpdateDisplay();
+            onUpdateDisplay();
             return;
         }
 

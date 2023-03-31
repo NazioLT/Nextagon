@@ -22,7 +22,7 @@ public class HexagonCase : MonoBehaviour
         grid = _grid;
         hexagon = _hex;
         number = _number;
-        layout= _layout;
+        layout = _layout;
 
         grid.onUpdateDisplay += UpdateDisplay;
         rectTransform.anchoredPosition = layout.HexagonToPixel(_hex);
@@ -44,10 +44,23 @@ public class HexagonCase : MonoBehaviour
         Vector2 _origin = rectTransform.anchoredPosition;
         Vector2 _target = layout.HexagonToPixel(_hex);
 
-        NTweening.NTBuild((_t) => 
+        NTweening.NTBuild((_t) =>
         {
             rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
-        }, 0.5f).StartTween();
+        }, 3).StartTween();
+    }
+
+    public void Respawn(float _originY)
+    {
+        gameObject.SetActive(true);
+
+        Vector2 _origin = new Vector2(rectTransform.anchoredPosition.x, _originY);
+        Vector2 _target = layout.HexagonToPixel(hexagon);
+
+        NTweening.NTBuild((_t) =>
+        {
+            rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
+        }, 3).StartTween();
     }
 
     public void HasBotCases(bool _value)
@@ -85,5 +98,5 @@ public class HexagonCase : MonoBehaviour
     }
 
     public int Number => number;
-    public Hexagon Hexagon => hexagon;
+    public Hexagon Hexagon { get => hexagon; set => hexagon = value; }
 }
