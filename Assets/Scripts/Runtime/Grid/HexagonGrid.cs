@@ -11,12 +11,26 @@ public class HexagonGrid : MonoBehaviour
     [SerializeField, Range(1, 8)] private int layers = 1;
     [SerializeField] private HexagonCase hexagonPrefab;
 
-    public Hexagon selectedCase { private set; get; }
-    public List<Hexagon> highlightedCases { private set; get; }
+    public HexagonCase selectedCase { private set; get; } = null;
+    public List<Hexagon> selectableCases { private set; get; } = new();
+    public List<Hexagon> highlightedCases { private set; get; } = new();
 
     private Dictionary<Hexagon, HexagonCase> cases = new();
 
     private void Awake()
+    {
+        CreateGrid();
+
+        selectableCases = new();
+        foreach (var _case in cases.Values)
+        {
+            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
+        }
+
+        onUpdateDisplay();
+    }
+
+    private void CreateGrid()
     {
         Layout _layout = new Layout(Orientation.LayoutFlat, size, origin);
 
@@ -29,7 +43,7 @@ public class HexagonGrid : MonoBehaviour
                 Hexagon _hex = new Hexagon(q, r);
                 HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
 
-                _case.Init(this, _hex, _layout);
+                _case.Init(this, _hex, _layout, Random.Range(1, 4));
                 cases.Add(_hex, _case);
             }
         }
@@ -43,23 +57,20 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
-    public void SelectSlot(Hexagon _hex)
+    public void SelectSlot(HexagonCase _case)
     {
-        // Hexagon[] _neighbours = _hex.Neighbours;
+        selectedCase = _case;
+        Hexagon[] _neighbours = _case.Hexagon.Neighbours;
+        selectableCases = new();
 
-        // SetAllGridNormal();
-
-        // cases[_hex].SelectedHighlight();
-
-        // foreach (var _neighbour in _neighbours)
-        // {
-        //     if (!cases.ContainsKey(_neighbour)) continue;
-
-        //     cases[_neighbour].NeighbourHighlight();
-        // }
-
-        selectedCase = _hex;
-        highlightedCases = new(_hex.Neighbours);
+        foreach (Hexagon _neighbour in _neighbours)
+        {   
+            if(cases.ContainsKey(_neighbour) && cases[_neighbour].Number == _case.Number + 1)
+            {
+                selectableCases.Add(_neighbour);
+            }
+        }
+        // highlightedCases = new(_hex.Neighbours);
 
         onUpdateDisplay();
     }
