@@ -121,7 +121,10 @@ public class HexagonGrid : MonoBehaviour
 
         selectedCase.NextLevel();
 
-        yield return StartCoroutine(MakeCaseFalling());
+        MakeCaseFalling();
+
+        yield return new WaitForSeconds(0.25f);
+
         ResetDisplay();
 
         onUpdateDisplay();
@@ -129,7 +132,7 @@ public class HexagonGrid : MonoBehaviour
         canClick = true;
     }
 
-    private IEnumerator MakeCaseFalling()
+    private void MakeCaseFalling()
     {
         List<HexagonCase> _destroyedCases = new();
 
@@ -180,10 +183,7 @@ public class HexagonGrid : MonoBehaviour
         foreach (var _case in _destroyedCases)
         {
             _case.Respawn(animSettings.SpawnHeight, bag.PickRandom());
-            yield return new WaitForSeconds(animSettings.timeBetweenFallingAnim);
         }
-
-        yield return new WaitForSeconds(animSettings.timeBetweenFallingAnim);
     }
 
     private void MakeNeighboursSelectables(bool _updateDisplay = true)

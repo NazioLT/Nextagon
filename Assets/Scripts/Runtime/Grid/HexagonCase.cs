@@ -56,7 +56,7 @@ public class HexagonCase : MonoBehaviour
 
         if (_distance < 0.03f) return 0f;//No Anim
 
-        float _animationTime = _distance / animSettings.fallingSpeed;//V = d / t => T = D / V
+        float _animationTime = animSettings.fallingDuration;//V = d / t => T = D / V
 
         NTweening.NTBuild((_t) =>
         {
@@ -74,7 +74,9 @@ public class HexagonCase : MonoBehaviour
         numberText.text = number.ToString();
 
         image.color = Color.white;
-        rectTransform.position = new Vector2(rectTransform.position.x, _originY);
+        float _yDelta = _originY - rectTransform.position.y;
+        Vector2 _hexPixelPosition = layout.HexagonToPixel(hexagon);
+        rectTransform.position = rectTransform.position + Vector3.up * (_originY + (_hexPixelPosition.y * animSettings.fallingSpacementFactor));
 
         return MoveTo(hexagon);
     }
