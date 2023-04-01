@@ -284,7 +284,56 @@ MonoBehaviour:
   hexagonPrefab: {fileID: 6081366211997438275, guid: d2c52934cfcdd364c9044af6c8ea6772, type: 3}
   animSettings:
     <timeBetweenFallingAnim>k__BackingField: 0.2
-    <fallingSpeed>k__BackingField: 2000
+    fallingDuration: 0.5
+    fallingSpacementFactor: 10
+    animationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    scaleFactorAnimationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0.0024337769
+        value: 1.0015373
+        inSlope: -0.011924056
+        outSlope: -0.011924056
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.12924072
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 2.350681
+        outSlope: 2.350681
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.024232535
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     spawnPoint: {fileID: 14962071}
 --- !u!114 &185823979
 MonoBehaviour:
