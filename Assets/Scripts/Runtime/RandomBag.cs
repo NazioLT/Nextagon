@@ -14,24 +14,29 @@ public class RandomBag
         int _itemNum = _maxExclusiveValue - _minInclusiveValue;
         int _equiCount = _count / _itemNum;
 
-        for (int i = 0; i < _equiCount; i++)
-        {
-            for (int n = _minInclusiveValue; n < _maxExclusiveValue; n++)
-            {
-                content.Add(n);
-            }
-        }
+        AddEquiCount(_equiCount);
     }
 
     private List<int> content;
 
     private int minInclusiveValue, maxExclusiveValue;
 
+    public void AddEquiCount(int _equiCount)
+    {
+        for (int i = 0; i < _equiCount; i++)
+        {
+            for (int n = minInclusiveValue; n < maxExclusiveValue; n++)
+            {
+                content.Add(n);
+            }
+        }
+    }
+
     public void Add(int _item) => content.Add(_item);
 
     public int PickRandom()
     {
-        if(content.Count == 0) return Random.Range(minInclusiveValue, maxExclusiveValue);
+        if (content.Count == 0) return Random.Range(minInclusiveValue, maxExclusiveValue);
 
         int _randomIndex = Random.Range(0, content.Count);
         int _result = content[_randomIndex];
