@@ -15,6 +15,7 @@ public class HexagonCase : MonoBehaviour
     [SerializeField] private TextMeshProUGUI numberText;
     private RectTransform rectTransform;
     private HexagonGrid grid;
+    private GridAnimationSettings animSettings;
 
     public void Init(HexagonGrid _grid, Hexagon _hex, Layout _layout, int _number)
     {
@@ -23,6 +24,7 @@ public class HexagonCase : MonoBehaviour
         hexagon = _hex;
         number = _number;
         layout = _layout;
+        animSettings = grid.AnimSettings;
 
         grid.onUpdateDisplay += UpdateDisplay;
         rectTransform.anchoredPosition = layout.HexagonToPixel(_hex);
@@ -50,10 +52,11 @@ public class HexagonCase : MonoBehaviour
         hexagon = _hex;
         Vector2 _origin = rectTransform.anchoredPosition;
         Vector2 _target = layout.HexagonToPixel(_hex);
+        float _distance = Vector2.Distance(_origin, _target);
 
-        if (Vector2.Distance(_origin, _target) < 0.03f) return 0f;//No Anim
+        if (_distance < 0.03f) return 0f;//No Anim
 
-        float _animationTime = 0.5f;
+        float _animationTime = _distance / animSettings.fallingSpeed;//V = d / t => T = D / V
 
         NTweening.NTBuild((_t) =>
         {
