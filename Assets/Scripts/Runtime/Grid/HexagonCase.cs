@@ -47,26 +47,19 @@ public class HexagonCase : MonoBehaviour
         return number;
     }
 
-    public float MoveTo(Hexagon _hex)
+    public void MoveTo(Hexagon _hex)
     {
         hexagon = _hex;
         Vector2 _origin = rectTransform.anchoredPosition;
         Vector2 _target = layout.HexagonToPixel(_hex);
         float _distance = Vector2.Distance(_origin, _target);
 
-        if (_distance < 0.03f) return 0f;//No Anim
+        if (_distance < 0.03f) return;//No Anim
 
-        float _animationTime = _distance / animSettings.fallingSpeed;//V = d / t => T = D / V
-
-        NTweening.NTBuild((_t) =>
-        {
-            rectTransform.anchoredPosition = Vector2.Lerp(_origin, _target, _t);
-        }, _animationTime).StartTween();
-
-        return _animationTime;
+        animSettings.MoveToAnim(rectTransform, _origin, _target);
     }
 
-    public float Respawn(float _originY, int _number)
+    public void Respawn(float _originY, int _number)
     {
         gameObject.SetActive(true);
 
@@ -74,9 +67,13 @@ public class HexagonCase : MonoBehaviour
         numberText.text = number.ToString();
 
         image.color = Color.white;
-        rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, _originY);
 
-        return MoveTo(hexagon);
+        //Sample spacing.
+        float _yDelta = _originY - rectTransform.position.y;
+        Vector2 _hexPixelPosition = layout.HexagonToPixel(hexagon);
+        rectTransform.position = rectTransform.position + Vector3.up * (_originY + (_hexPixelPosition.y * animSettings.FallingSpacementFactor));
+
+        MoveTo(hexagon);
     }
 
     private void UpdateDisplay()
