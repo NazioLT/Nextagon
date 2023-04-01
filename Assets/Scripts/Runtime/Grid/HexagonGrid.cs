@@ -28,14 +28,14 @@ public class HexagonGrid : MonoBehaviour
     {
         CreateGrid();
 
-        SelectAllOne();
+        ResetDisplay();
     }
 
     public void Undo()
     {
         if (pathCases.Count == 0)
         {
-            SelectAllOne();
+            ResetDisplay();
             return;
         }
 
@@ -45,6 +45,8 @@ public class HexagonGrid : MonoBehaviour
 
         MakeNeighboursSelectables();
     }
+
+    public void Jump() => SelectAllNumbers(selectedCase.Number + 1);
 
     public void SelectSlot(HexagonCase _case)
     {
@@ -73,7 +75,7 @@ public class HexagonGrid : MonoBehaviour
         selectedCase.NextLevel();
 
         yield return StartCoroutine(MakeCaseFalling());
-        SelectAllOne();
+        ResetDisplay();
 
         onUpdateDisplay();
     }
@@ -177,14 +179,19 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
-    private void SelectAllOne()
+    private void ResetDisplay()
     {
         pathCases = new();
         selectedCase = null;
+        SelectAllNumbers(1);
+    }
+
+    private void SelectAllNumbers(int _number)
+    {
         selectableCases = new();
         foreach (var _case in cases.Values)
         {
-            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
+            if (_case.Number == _number) selectableCases.Add(_case.Hexagon);
         }
 
         onUpdateDisplay();
