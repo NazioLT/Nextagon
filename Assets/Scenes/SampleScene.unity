@@ -283,8 +283,8 @@ MonoBehaviour:
   layers: 2
   hexagonPrefab: {fileID: 6081366211997438275, guid: d2c52934cfcdd364c9044af6c8ea6772, type: 3}
   animSettings:
-    <timeBetweenFallingAnim>k__BackingField: 0.2
-    fallingDuration: 0.5
+    <timeBetweenFallingAnim>k__BackingField: 0.25
+    fallingDuration: 1
     fallingSpacementFactor: 10
     animationCurve:
       serializedVersion: 2
@@ -316,20 +316,20 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 0.0024337769
         value: 1.0015373
-        inSlope: -0.011924056
-        outSlope: -0.011924056
+        inSlope: -0.57719845
+        outSlope: -0.57719845
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0.12924072
+        outWeight: 0.05008077
       - serializedVersion: 3
         time: 1
         value: 1
-        inSlope: 2.350681
-        outSlope: 2.350681
+        inSlope: 1.6846653
+        outSlope: 1.6846653
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.024232535
+        inWeight: 0.022617072
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
