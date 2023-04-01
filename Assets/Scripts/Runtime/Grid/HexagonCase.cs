@@ -74,7 +74,7 @@ public class HexagonCase : MonoBehaviour
         numberText.text = number.ToString();
 
         image.color = Color.white;
-        rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, _originY);
+        rectTransform.position = new Vector2(rectTransform.position.x, _originY);
 
         return MoveTo(hexagon);
     }
