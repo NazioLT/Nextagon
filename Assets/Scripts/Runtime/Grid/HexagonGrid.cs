@@ -16,6 +16,9 @@ public class HexagonGrid : MonoBehaviour
     [SerializeField] private HexagonCase hexagonPrefab;
     [SerializeField] private GridAnimationSettings animSettings;
 
+    private int jumpCount;
+    private int jumpInUsing = 0;
+
     public HexagonCase selectedCase { private set; get; } = null;
     public List<Hexagon> selectableCases { private set; get; } = new();
     public List<Hexagon> pathCases { private set; get; } = new();
@@ -24,14 +27,18 @@ public class HexagonGrid : MonoBehaviour
     private List<Hexagon> gridCoords = new();
 
     private RandomBag bag;
+    private ScoreManager score;
 
     private const int MAXSTARTNUMBER = 3;
 
-    private void Awake()
+    private void Start()
     {
         CreateGrid();
 
         ResetDisplay();
+
+        score = ScoreManager.instance;
+        jumpCount = 3;
     }
 
     #region Inputs
@@ -50,9 +57,14 @@ public class HexagonGrid : MonoBehaviour
             return;
         }
 
-        if (selectedCase) pathCases.Add(selectedCase.Hexagon);
+        if (selectedCase)
+        {
+            pathCases.Add(selectedCase.Hexagon);
+
+            //Use un jump si la nouvelle case n'est pas voisine de l'actuelle.
+            if (!_case.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing++;
+        }
         selectedCase = _case;
-        Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
 
         MakeNeighboursSelectables();
     }
@@ -66,7 +78,11 @@ public class HexagonGrid : MonoBehaviour
         }
 
         Hexagon _lastPathCaseID = pathCases.Last();
-        selectedCase = cases[_lastPathCaseID];
+        HexagonCase _undoCase = cases[_lastPathCaseID];
+
+        if (!_undoCase.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing--;
+
+        selectedCase = _undoCase;
         pathCases.Remove(_lastPathCaseID);
 
         MakeNeighboursSelectables();
@@ -74,16 +90,28 @@ public class HexagonGrid : MonoBehaviour
 
     public void Jump()
     {
-        if(!canClick || selectedCase == null) return;
+        if (!canClick || selectedCase == null || JumpRemaining <= 0) return;
 
         SelectAllNumbers(selectedCase.Number + 1);
     }
 
     #endregion
 
+    private void OnEndTurn()
+    {
+        jumpCount -= jumpInUsing;
+
+        if (score.AddScore(selectedCase.Number))
+        {
+            jumpCount++;
+        }
+    }
+
     private IEnumerator EndTurn()
     {
         canClick = false;
+
+        OnEndTurn();
 
         foreach (Hexagon _hex in pathCases)
         {
@@ -204,6 +232,8 @@ public class HexagonGrid : MonoBehaviour
         pathCases = new();
         selectedCase = null;
         SelectAllNumbers(1);
+
+        jumpInUsing = 0;
     }
 
     private void SelectAllNumbers(int _number)
@@ -218,4 +248,5 @@ public class HexagonGrid : MonoBehaviour
     }
 
     public GridAnimationSettings AnimSettings => animSettings;
+    public int JumpRemaining => jumpCount - jumpInUsing;
 }
