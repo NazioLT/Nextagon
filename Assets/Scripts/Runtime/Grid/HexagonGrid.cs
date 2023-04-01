@@ -39,6 +39,7 @@ public class HexagonGrid : MonoBehaviour
 
         score = ScoreManager.instance;
         jumpCount = 3;
+        bag.AddEquiCount(3);
     }
 
     #region Inputs
