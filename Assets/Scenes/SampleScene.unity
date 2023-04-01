@@ -172,6 +172,7 @@ GameObject:
   - component: {fileID: 185823975}
   - component: {fileID: 185823974}
   - component: {fileID: 185823978}
+  - component: {fileID: 185823979}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -283,6 +284,20 @@ MonoBehaviour:
     <timeBetweenFallingAnim>k__BackingField: 0.35
     <fallingSpeed>k__BackingField: 1000
     spawnPoint: {fileID: 14962071}
+--- !u!114 &185823979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185823973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b1623ef48cc36248937bb9caed22af3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpCountText: {fileID: 522893233}
+  grid: {fileID: 185823978}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
