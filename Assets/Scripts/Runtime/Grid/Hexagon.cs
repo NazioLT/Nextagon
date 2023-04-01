@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct Hexagon : IEquatable<Hexagon>
@@ -57,11 +58,18 @@ public struct Hexagon : IEquatable<Hexagon>
 
         return _neighbours;
     }
+    public static bool IsNeighbours(Hexagon _a, Hexagon _b)
+    {
+        List<Hexagon> _aNeighbours = new(_a.Neighbours);
+        return _aNeighbours.Contains(_b);
+    }
 
     #endregion
 
     public int Length => GetLength(this);
     public Hexagon[] Neighbours => GetNeighbours(this);
+
+    public bool IsNeighbours(Hexagon _other) => IsNeighbours(this, _other);
 
     public override int GetHashCode() => HashCode.Combine(q, r, s);
 

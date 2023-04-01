@@ -9,9 +9,15 @@ public class HexagonGrid : MonoBehaviour
 {
     public event SimpleDelegate onUpdateDisplay;
 
+    private bool canClick = true;
+
     [SerializeField] private Vector2 origin, size;
     [SerializeField, Range(1, 8)] private int layers = 1;
     [SerializeField] private HexagonCase hexagonPrefab;
+    [SerializeField] private GridAnimationSettings animSettings;
+
+    private int jumpCount;
+    private int jumpInUsing = 0;
 
     public HexagonCase selectedCase { private set; get; } = null;
     public List<Hexagon> selectableCases { private set; get; } = new();
@@ -21,34 +27,29 @@ public class HexagonGrid : MonoBehaviour
     private List<Hexagon> gridCoords = new();
 
     private RandomBag bag;
+    private ScoreManager score;
 
     private const int MAXSTARTNUMBER = 3;
 
-    private void Awake()
+    private void Start()
     {
         CreateGrid();
 
-        SelectAllOne();
+        ResetDisplay();
+
+        score = ScoreManager.instance;
+        jumpCount = 3;
     }
 
-    public void Undo()
-    {
-        if (pathCases.Count == 0)
-        {
-            SelectAllOne();
-            return;
-        }
-
-        Hexagon _lastPathCaseID = pathCases.Last();
-        selectedCase = cases[_lastPathCaseID];
-        pathCases.Remove(_lastPathCaseID);
-
-        MakeNeighboursSelectables();
-    }
+    #region Inputs
 
     public void SelectSlot(HexagonCase _case)
     {
+        if (!canClick) return;
+
         if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
+
+        if (selectedCase != null && selectedCase.Number == 1 && _case.Number == 1) return;//Reclick sur le 1
 
         if (_case == selectedCase && pathCases.Count > 0)//Confirm
         {
@@ -56,15 +57,62 @@ public class HexagonGrid : MonoBehaviour
             return;
         }
 
-        if (selectedCase) pathCases.Add(selectedCase.Hexagon);
+        if (selectedCase)
+        {
+            pathCases.Add(selectedCase.Hexagon);
+
+            //Use un jump si la nouvelle case n'est pas voisine de l'actuelle.
+            if (!_case.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing++;
+        }
         selectedCase = _case;
-        Hexagon[] _neighbours = selectedCase.Hexagon.Neighbours;
 
         MakeNeighboursSelectables();
     }
 
+    public void Undo()
+    {
+        if (pathCases.Count == 0)
+        {
+            ResetDisplay();
+            return;
+        }
+
+        Hexagon _lastPathCaseID = pathCases.Last();
+        HexagonCase _undoCase = cases[_lastPathCaseID];
+
+        if (!_undoCase.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing--;
+
+        selectedCase = _undoCase;
+        pathCases.Remove(_lastPathCaseID);
+
+        MakeNeighboursSelectables();
+    }
+
+    public void Jump()
+    {
+        if (!canClick || selectedCase == null || JumpRemaining <= 0) return;
+
+        SelectAllNumbers(selectedCase.Number + 1);
+    }
+
+    #endregion
+
+    private void OnEndTurn()
+    {
+        jumpCount -= jumpInUsing;
+
+        if (score.AddScore(selectedCase.Number))
+        {
+            jumpCount++;
+        }
+    }
+
     private IEnumerator EndTurn()
     {
+        canClick = false;
+
+        OnEndTurn();
+
         foreach (Hexagon _hex in pathCases)
         {
             bag.Add(cases[_hex].Kill());//Remet le chiffre dans le "sac"
@@ -73,9 +121,11 @@ public class HexagonGrid : MonoBehaviour
         selectedCase.NextLevel();
 
         yield return StartCoroutine(MakeCaseFalling());
-        SelectAllOne();
+        ResetDisplay();
 
         onUpdateDisplay();
+
+        canClick = true;
     }
 
     private IEnumerator MakeCaseFalling()
@@ -128,11 +178,11 @@ public class HexagonGrid : MonoBehaviour
 
         foreach (var _case in _destroyedCases)
         {
-            _case.Respawn(500f, bag.PickRandom());
-            yield return new WaitForSeconds(0.25f);
+            _case.Respawn(animSettings.SpawnHeight, bag.PickRandom());
+            yield return new WaitForSeconds(animSettings.timeBetweenFallingAnim);
         }
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(animSettings.timeBetweenFallingAnim);
     }
 
     private void MakeNeighboursSelectables(bool _updateDisplay = true)
@@ -177,16 +227,26 @@ public class HexagonGrid : MonoBehaviour
         }
     }
 
-    private void SelectAllOne()
+    private void ResetDisplay()
     {
         pathCases = new();
         selectedCase = null;
+        SelectAllNumbers(1);
+
+        jumpInUsing = 0;
+    }
+
+    private void SelectAllNumbers(int _number)
+    {
         selectableCases = new();
         foreach (var _case in cases.Values)
         {
-            if (_case.Number == 1) selectableCases.Add(_case.Hexagon);
+            if (_case.Number == _number) selectableCases.Add(_case.Hexagon);
         }
 
         onUpdateDisplay();
     }
+
+    public GridAnimationSettings AnimSettings => animSettings;
+    public int JumpRemaining => jumpCount - jumpInUsing;
 }
