@@ -39,7 +39,7 @@ public class HexagonGrid : MonoBehaviour
 
         score = ScoreManager.instance;
         jumpCount = 3;
-        bag.AddEquiCount(3);
+        bag.AddEquiCount(12);
     }
 
     #region Inputs
@@ -206,19 +206,13 @@ public class HexagonGrid : MonoBehaviour
     {
         Layout _layout = new Layout(Orientation.LayoutFlat, size, origin);
 
-        for (int q = -layers; q <= layers; q++)
+        _layout.ForEachHexagon(layers, (i, _hex) =>
         {
-            int _r1 = Mathf.Max(-layers, -q - layers);
-            int _r2 = Mathf.Min(layers, -q + layers);
-            for (int r = _r1; r <= _r2; r++)
-            {
-                Hexagon _hex = new Hexagon(q, r);
-                HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
+            HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
 
-                cases.Add(_hex, _case);
-                gridCoords.Add(_hex);
-            }
-        }
+            cases.Add(_hex, _case);
+            gridCoords.Add(_hex);
+        });
 
         bag = new RandomBag(1, MAXSTARTNUMBER + 1, cases.Count);//+1 car exclusive
 
