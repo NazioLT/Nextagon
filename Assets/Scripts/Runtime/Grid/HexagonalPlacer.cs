@@ -20,6 +20,13 @@ public class HexagonalPlacer : MonoBehaviour
 
     private void OnValidate()
     {
-        PlaceInGrid(new List<RectTransform>(GetComponentsInChildren<RectTransform>()));
+        List<RectTransform> _rects = new();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            RectTransform _rect = transform.GetChild(i).GetComponent<RectTransform>();
+            if(_rect != null) _rects.Add(_rect);
+        }
+
+        PlaceInGrid(_rects);
     }
 }
