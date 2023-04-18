@@ -39,7 +39,7 @@ public class HexagonGrid : MonoBehaviour
 
         score = ScoreManager.instance;
         jumpCount = 3;
-        bag.AddEquiCount(3);
+        bag.AddEquiCount(12);
     }
 
     #region Inputs
@@ -50,7 +50,15 @@ public class HexagonGrid : MonoBehaviour
 
         if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
 
-        if (selectedCase != null && selectedCase.Number == 1 && _case.Number == 1) return;//Reclick sur le 1
+        if (GameManager.GameMode.CanCombineOnes && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1)//Combine 2 1
+        {
+            pathCases.Add(selectedCase.Hexagon);
+            selectedCase = _case;
+            StartCoroutine(EndTurn());
+            return;
+        }
+
+        if (GameManager.GameMode.CanCombineOnes == false && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1) return;//Reclick sur le 1
 
         if (_case == selectedCase && pathCases.Count > 0)//Confirm
         {
@@ -193,7 +201,7 @@ public class HexagonGrid : MonoBehaviour
 
         foreach (Hexagon _neighbour in _neighbours)
         {
-            if (cases.ContainsKey(_neighbour) && cases[_neighbour].Number == selectedCase.Number + 1)
+            if (GameManager.GameMode.MakeNeighbourSelectableCondition(cases, _neighbour, selectedCase))
             {
                 selectableCases.Add(_neighbour);
             }
@@ -206,19 +214,13 @@ public class HexagonGrid : MonoBehaviour
     {
         Layout _layout = new Layout(Orientation.LayoutFlat, size, origin);
 
-        for (int q = -layers; q <= layers; q++)
+        _layout.ForEachHexagon(layers, (i, _hex) =>
         {
-            int _r1 = Mathf.Max(-layers, -q - layers);
-            int _r2 = Mathf.Min(layers, -q + layers);
-            for (int r = _r1; r <= _r2; r++)
-            {
-                Hexagon _hex = new Hexagon(q, r);
-                HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
+            HexagonCase _case = Instantiate(hexagonPrefab, Vector3.zero, Quaternion.identity, transform);
 
-                cases.Add(_hex, _case);
-                gridCoords.Add(_hex);
-            }
-        }
+            cases.Add(_hex, _case);
+            gridCoords.Add(_hex);
+        });
 
         bag = new RandomBag(1, MAXSTARTNUMBER + 1, cases.Count);//+1 car exclusive
 
