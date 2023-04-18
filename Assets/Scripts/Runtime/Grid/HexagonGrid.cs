@@ -50,7 +50,15 @@ public class HexagonGrid : MonoBehaviour
 
         if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
 
-        if (GameManager.GameMode.CanReClickOnOnes == false && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1) return;//Reclick sur le 1
+        if (GameManager.GameMode.CanCombineOnes && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1)//Combine 2 1
+        {
+            pathCases.Add(selectedCase.Hexagon);
+            selectedCase = _case;
+            StartCoroutine(EndTurn());
+            return;
+        }
+
+        if (GameManager.GameMode.CanCombineOnes == false && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1) return;//Reclick sur le 1
 
         if (_case == selectedCase && pathCases.Count > 0)//Confirm
         {

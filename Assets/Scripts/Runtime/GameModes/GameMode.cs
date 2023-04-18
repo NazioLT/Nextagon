@@ -11,5 +11,5 @@ public abstract class GameMode : ScriptableObject
     }
 
     public Sprite Icon => gameModeIcon;
-    public virtual bool CanReClickOnOnes => false;
+    public virtual bool CanCombineOnes => false;
 }

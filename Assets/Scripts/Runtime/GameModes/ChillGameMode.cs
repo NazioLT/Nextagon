@@ -14,5 +14,5 @@ public class ChillGameMode : GameMode
         return _nextCase.Number == _selectedNumber + 1 || (_selectedNumber == 1 && _nextCase.Number == 1);
     }
 
-    public override bool CanReClickOnOnes => true;
+    public override bool CanCombineOnes => true;
 }
