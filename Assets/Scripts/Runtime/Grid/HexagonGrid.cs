@@ -10,6 +10,7 @@ public class HexagonGrid : MonoBehaviour
     public event SimpleDelegate onUpdateDisplay;
 
     private bool canClick = true;
+    private bool growUp = false;
 
     [SerializeField] private Vector2 origin, size;
     [SerializeField, Range(1, 8)] private int layers = 1;
@@ -49,6 +50,14 @@ public class HexagonGrid : MonoBehaviour
         if (!canClick) return;
 
         if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
+
+        if (growUp)
+        {
+            _case.NextLevel();
+            growUp = false;
+            StartCoroutine(EndTurn());
+            return;
+        }
 
         if (GameManager.GameMode.CanCombineOnes && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1)//Combine 2 1
         {
@@ -108,6 +117,8 @@ public class HexagonGrid : MonoBehaviour
     public void Clean()
     {
         selectedCase = null;
+        pathCases.Clear();
+        selectableCases = new();
 
         foreach (var _case in cases.Keys)
         {
@@ -120,13 +131,28 @@ public class HexagonGrid : MonoBehaviour
         StartCoroutine(FallingAnim());
     }
 
+    public void GrowUp()
+    {
+        selectableCases = null;
+        pathCases.Clear();
+        selectableCases = new();
+
+        foreach (Hexagon _id in cases.Keys)
+        {
+            if (cases[_id].Number <= score.MaxNumber) selectableCases.Add(_id);
+        }
+
+        growUp = true;
+        onUpdateDisplay();
+    }
+
     #endregion
 
     private void OnEndTurn()
     {
         jumpCount -= jumpInUsing;
 
-        if (score.AddScore(selectedCase.Number))
+        if (selectedCase != null && score.AddScore(selectedCase.Number))
         {
             jumpCount++;
         }
@@ -143,7 +169,7 @@ public class HexagonGrid : MonoBehaviour
             bag.Add(cases[_hex].Kill());//Remet le chiffre dans le "sac"
         }
 
-        selectedCase.NextLevel();
+        selectedCase?.NextLevel();
 
         yield return StartCoroutine(FallingAnim());
     }

@@ -39,4 +39,5 @@ public class ScoreManager : Singleton<ScoreManager>
     }
 
     private void UpdateMaxScore(int _newScore) => totalMaxScore = _newScore > totalMaxScore ? _newScore : totalMaxScore;
+    public int MaxNumber => maxNumber;
 }
