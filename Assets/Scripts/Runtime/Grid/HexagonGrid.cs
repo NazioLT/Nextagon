@@ -73,7 +73,7 @@ public class HexagonGrid : MonoBehaviour
             //Use un jump si la nouvelle case n'est pas voisine de l'actuelle.
             if (!_case.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing++;
         }
-        
+
         selectedCase = _case;
 
         MakeNeighboursSelectables();
@@ -105,6 +105,21 @@ public class HexagonGrid : MonoBehaviour
         SelectAllNumbers(selectedCase.Number + 1);
     }
 
+    public void Clean()
+    {
+        selectedCase = null;
+
+        foreach (var _case in cases.Keys)
+        {
+            if (cases[_case].Number <= 3)
+            {
+                bag.Add(cases[_case].Kill());//Remet le chiffre dans le "sac"
+            }
+        }
+
+        StartCoroutine(FallingAnim());
+    }
+
     #endregion
 
     private void OnEndTurn()
@@ -130,6 +145,11 @@ public class HexagonGrid : MonoBehaviour
 
         selectedCase.NextLevel();
 
+        yield return StartCoroutine(FallingAnim());
+    }
+
+    private IEnumerator FallingAnim()
+    {
         MakeCaseFalling();
 
         yield return new WaitForSeconds(0.25f);
