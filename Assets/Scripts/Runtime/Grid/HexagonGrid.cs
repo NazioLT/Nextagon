@@ -73,6 +73,7 @@ public class HexagonGrid : MonoBehaviour
             //Use un jump si la nouvelle case n'est pas voisine de l'actuelle.
             if (!_case.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing++;
         }
+        
         selectedCase = _case;
 
         MakeNeighboursSelectables();

@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  currentGameMode: {fileID: 11400000, guid: 4a6964fdfc736a544b2bd2aea4ebbee4, type: 2}
+  currentGameMode: {fileID: 11400000, guid: 29196ac24f89a6649a728879534c5b63, type: 2}
