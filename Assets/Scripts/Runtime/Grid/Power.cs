@@ -22,17 +22,16 @@ public class Power
 
     public void GainCount() => count++;
     public void RemoveCount(int _count = 1) => count -= _count;
+    public void UpdateDisplay()
+    {
+        countText.text = count.ToString();
+    }
 
     private void TryUse()
     {
         if (count <= 0) return;
 
         powerCallBack();
-    }
-
-    private void UpdateDisplay()
-    {
-        countText.text = count.ToString();
     }
 
     public int Count => count;

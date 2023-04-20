@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Nazio_LT.Tools.Core;
@@ -6,7 +5,7 @@ using Nazio_LT.Tools.Core;
 public class GameManager : Singleton<GameManager>
 {
     [SerializeField] private GameMode currentGameMode;
-    private Powers[] powers;
+    private Powers[] powers = { global::Powers.Jump, global::Powers.Clean, global::Powers.GrowUp };
 
     public void Play(GameMode _gameMode, Powers power1, Powers power2, Powers power3)
     {
@@ -16,4 +15,5 @@ public class GameManager : Singleton<GameManager>
     }
 
     public static GameMode GameMode => instance.currentGameMode;
+    public static Powers[] Powers => instance.powers;
 }

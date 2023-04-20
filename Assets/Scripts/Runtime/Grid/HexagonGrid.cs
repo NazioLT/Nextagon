@@ -105,7 +105,7 @@ public class HexagonGrid : MonoBehaviour
 
     public void Undo()
     {
-        if(growUp)
+        if (growUp)
         {
             growUp = false;
             ResetDisplay();
@@ -174,8 +174,26 @@ public class HexagonGrid : MonoBehaviour
 
     #endregion
 
+    public Power PowerFactory(Powers _type)
+    {
+        switch (_type)
+        {
+            case Powers.Jump:
+                return jumpPower;
+
+            case Powers.Clean:
+                return cleanPower;
+
+            case Powers.GrowUp:
+                return growUpPower;
+        }
+
+        return null;
+    }
+
     private void OnEndTurn()
     {
+        score.AddScore(selectedCase.Number);
         jumpPower.RemoveCount(jumpInUsing);
     }
 

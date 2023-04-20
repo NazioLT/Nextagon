@@ -1,10 +1,10 @@
 using Nazio_LT.Tools.Core;
 
-public delegate void SimpleDelegate<T>(T _arg);
+public delegate void SimpleDelegate<T, T2>(T _arg1, T2 _arg2);
 
 public class ScoreManager : Singleton<ScoreManager>
 {
-    public event SimpleDelegate<int> onScoreUpdated = (_s) => {};
+    public event SimpleDelegate<int, int> onScoreUpdated = (_s, _totalS) => {};
 
     private int totalMaxNumber;
     private int totalMaxScore;
@@ -30,7 +30,7 @@ public class ScoreManager : Singleton<ScoreManager>
         _score *= _maxNumber;
 
         score += _score;
-        onScoreUpdated(score);
+        onScoreUpdated(score, _score);
 
         bool _newMaxNumber = _maxNumber > maxNumber;
         if(_newMaxNumber) maxNumber = _maxNumber;
@@ -38,6 +38,6 @@ public class ScoreManager : Singleton<ScoreManager>
         return _newMaxNumber;
     }
 
-    private void UpdateMaxScore(int _newScore) => totalMaxScore = _newScore > totalMaxScore ? _newScore : totalMaxScore;
+    private void UpdateMaxScore(int _newScore, int _scoreGained) => totalMaxScore = _newScore > totalMaxScore ? _newScore : totalMaxScore;
     public int MaxNumber => maxNumber;
 }
