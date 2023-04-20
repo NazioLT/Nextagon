@@ -28,6 +28,9 @@ public class HexagonGrid : MonoBehaviour
     [SerializeField] private Power jumpPower;
     [SerializeField] private Power cleanPower;
     [SerializeField] private Power growUpPower;
+    [SerializeField] private Power nonePower;
+
+    private Dictionary<Powers, Power> powers;
 
     private int jumpInUsing = 0;
     private bool growUp = false;
@@ -46,10 +49,30 @@ public class HexagonGrid : MonoBehaviour
 
     private void Start()
     {
+        // POWERS
+        powers = new(){
+            { Powers.Clean, cleanPower },
+            { Powers.Jump, jumpPower },
+            { Powers.GrowUp, growUpPower },
+            { Powers.None, nonePower },
+        };
+
         jumpPower.Init(this, Jump);
         cleanPower.Init(this, Clean);
         growUpPower.Init(this, GrowUp);
 
+        foreach (Power power in powers.Values)
+        {
+            power.Show(false);
+        }
+
+        foreach (Powers power in GameManager.Powers)
+        {
+            powers[power].Show(true);
+        }
+        
+
+        // GRID
         CreateGrid();
 
         ResetDisplay();

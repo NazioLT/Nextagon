@@ -20,6 +20,11 @@ public class Power
         UpdateDisplay();
     }
 
+    public void Show(bool _value)
+    {
+        button.gameObject.SetActive(_value);
+    }
+
     public void GainCount() => count++;
     public void RemoveCount(int _count = 1) => count -= _count;
     public void UpdateDisplay()
