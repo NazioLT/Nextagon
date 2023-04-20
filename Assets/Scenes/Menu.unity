@@ -394,7 +394,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Clean
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 706943932}
   - component: {fileID: 706943931}
   m_Layer: 5
-  m_Name: Power Button (2)
+  m_Name: Grow Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1672,7 +1672,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Grow Up
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2028,7 +2028,7 @@ GameObject:
   - component: {fileID: 1397545586}
   - component: {fileID: 1397545585}
   m_Layer: 5
-  m_Name: Power Button (1)
+  m_Name: Clean
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3761,6 +3761,7 @@ GameObject:
   - component: {fileID: 2783698704533081695}
   - component: {fileID: 2783698704533081690}
   - component: {fileID: 2783698704533081688}
+  - component: {fileID: 7973296702361864933}
   m_Layer: 5
   m_Name: PowerChoosing
   m_TagString: Untagged
@@ -4160,7 +4161,7 @@ GameObject:
   - component: {fileID: 7091480007856063603}
   - component: {fileID: 7091480007856063605}
   m_Layer: 5
-  m_Name: Power Button
+  m_Name: Jump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4338,7 +4339,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Jump
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4432,6 +4433,26 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7973296702361864933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2783698704533081700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5079ea8c30a5ea9428740a12de8024ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerButtons:
+  - button: {fileID: 7091480007856063605}
+    type: 1
+  - button: {fileID: 1397545585}
+    type: 2
+  - button: {fileID: 706943931}
+    type: 3
+  mainMenu: {fileID: 8513980020986237110}
 --- !u!114 &8177064520247494173
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,9 +11,9 @@ public class MainMenu : MonoBehaviour
         gameMode = GameManager.GameMode;
     }
 
-    public void Play()
+    public void Play(Powers[] _powers)
     {
-        GameManager.instance.Play(gameMode, Powers.None, Powers.None, Powers.None);
+        GameManager.instance.Play(gameMode, _powers);
     }
 
     public void ChooseGameMode(GameMode _gameMode)

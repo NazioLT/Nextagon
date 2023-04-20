@@ -7,9 +7,11 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameMode currentGameMode;
     private Powers[] powers = { global::Powers.Jump, global::Powers.Clean, global::Powers.GrowUp };
 
-    public void Play(GameMode _gameMode, Powers power1, Powers power2, Powers power3)
+    public void Play(GameMode _gameMode, Powers[] _powers)
     {
-        powers = new Powers[] { power1, power2, power3 };
+        if(_powers.Length > 3) throw new System.Exception("Mode than 3 powers has been choosen!");
+
+        powers = _powers;
         currentGameMode = _gameMode;
         SceneManager.LoadScene("Game");
     }
