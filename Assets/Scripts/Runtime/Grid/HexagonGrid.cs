@@ -5,20 +5,32 @@ using Nazio_LT.Tools.Core;
 
 public delegate void SimpleDelegate();
 
+public enum Powers
+{
+    None,
+    Jump,
+    Clean,
+    GrowUp
+}
+
 public class HexagonGrid : MonoBehaviour
 {
     public event SimpleDelegate onUpdateDisplay;
 
     private bool canClick = true;
-    private bool growUp = false;
 
     [SerializeField] private Vector2 origin, size;
     [SerializeField, Range(1, 8)] private int layers = 1;
     [SerializeField] private HexagonCase hexagonPrefab;
     [SerializeField] private GridAnimationSettings animSettings;
 
-    private int jumpCount;
+    [Header("Powers")]
+    [SerializeField] private Power jumpPower;
+    [SerializeField] private Power cleanPower;
+    [SerializeField] private Power growUpPower;
+
     private int jumpInUsing = 0;
+    private bool growUp = false;
 
     public HexagonCase selectedCase { private set; get; } = null;
     public List<Hexagon> selectableCases { private set; get; } = new();
@@ -34,12 +46,15 @@ public class HexagonGrid : MonoBehaviour
 
     private void Start()
     {
+        jumpPower.Init(this, Jump);
+        cleanPower.Init(this, Clean);
+        growUpPower.Init(this, GrowUp);
+
         CreateGrid();
 
         ResetDisplay();
 
         score = ScoreManager.instance;
-        jumpCount = 3;
         bag.AddEquiCount(12);
     }
 
@@ -90,6 +105,13 @@ public class HexagonGrid : MonoBehaviour
 
     public void Undo()
     {
+        if(growUp)
+        {
+            growUp = false;
+            ResetDisplay();
+            return;
+        }
+
         if (pathCases.Count == 0)
         {
             ResetDisplay();
@@ -120,6 +142,8 @@ public class HexagonGrid : MonoBehaviour
         pathCases.Clear();
         selectableCases = new();
 
+        cleanPower.RemoveCount();
+
         foreach (var _case in cases.Keys)
         {
             if (cases[_case].Number <= 3)
@@ -137,6 +161,8 @@ public class HexagonGrid : MonoBehaviour
         pathCases.Clear();
         selectableCases = new();
 
+        growUpPower.RemoveCount();
+
         foreach (Hexagon _id in cases.Keys)
         {
             if (cases[_id].Number <= score.MaxNumber) selectableCases.Add(_id);
@@ -150,12 +176,7 @@ public class HexagonGrid : MonoBehaviour
 
     private void OnEndTurn()
     {
-        jumpCount -= jumpInUsing;
-
-        if (selectedCase != null && score.AddScore(selectedCase.Number))
-        {
-            jumpCount++;
-        }
+        jumpPower.RemoveCount(jumpInUsing);
     }
 
     private IEnumerator EndTurn()
@@ -298,5 +319,5 @@ public class HexagonGrid : MonoBehaviour
     }
 
     public GridAnimationSettings AnimSettings => animSettings;
-    public int JumpRemaining => jumpCount - jumpInUsing;
+    public int JumpRemaining => jumpPower.Count - jumpInUsing;
 }

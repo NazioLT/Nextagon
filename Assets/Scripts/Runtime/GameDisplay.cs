@@ -3,7 +3,6 @@ using TMPro;
 
 public class GameDisplay : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI jumpCountText;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private HexagonGrid grid;
     private ScoreManager score;
@@ -19,7 +18,7 @@ public class GameDisplay : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        jumpCountText.text = "Jump : " + grid.JumpRemaining;
+        
     }
 
     private void UpdateScore(int _score)

@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
 
     public void Play()
     {
-        GameManager.instance.Play(gameMode);
+        GameManager.instance.Play(gameMode, Powers.None, Powers.None, Powers.None);
     }
 
     public void ChooseGameMode(GameMode _gameMode)
