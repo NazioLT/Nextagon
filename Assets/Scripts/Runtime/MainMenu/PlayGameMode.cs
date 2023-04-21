@@ -5,17 +5,19 @@ public class PlayGameMode : MonoBehaviour
 {
     [SerializeField] private GameMode gameMode;
     [SerializeField] private NButton button;
+    [SerializeField] private MainMenu mainMenu;
 
-    private void Awake() {
-        if(button == null)
+    private void Awake()
+    {
+        if (button == null)
         {
             Destroy(this);
             return;
         }
 
-        button.onClick.AddListener(() => 
+        button.onClick.AddListener(() =>
         {
-            GameManager.instance.Play(gameMode);
+            mainMenu.ChooseGameMode(gameMode);
         });
     }
 }

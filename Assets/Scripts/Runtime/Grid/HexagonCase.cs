@@ -71,7 +71,7 @@ public class HexagonCase : MonoBehaviour
         //Sample spacing.
         float _yDelta = _originY - rectTransform.position.y;
         Vector2 _hexPixelPosition = layout.HexagonToPixel(hexagon);
-        rectTransform.position = rectTransform.position + Vector3.up * (_originY + (_hexPixelPosition.y * animSettings.FallingSpacementFactor));
+        rectTransform.position = rectTransform.position.x * Vector3.right + Vector3.up * (_originY + (_hexPixelPosition.y * animSettings.FallingSpacementFactor));
 
         MoveTo(hexagon);
     }

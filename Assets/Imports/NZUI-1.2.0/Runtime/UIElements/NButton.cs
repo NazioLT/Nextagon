@@ -68,5 +68,6 @@ namespace Nazio_LT.Tools.UI
         }
 
         public bool HasLabel => label != null;
+        public string LabelText => HasLabel ? label.text : "";
     }
 }

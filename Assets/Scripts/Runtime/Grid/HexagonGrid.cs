@@ -5,6 +5,14 @@ using Nazio_LT.Tools.Core;
 
 public delegate void SimpleDelegate();
 
+public enum Powers
+{
+    None,
+    Jump,
+    Clean,
+    GrowUp
+}
+
 public class HexagonGrid : MonoBehaviour
 {
     public event SimpleDelegate onUpdateDisplay;
@@ -16,8 +24,16 @@ public class HexagonGrid : MonoBehaviour
     [SerializeField] private HexagonCase hexagonPrefab;
     [SerializeField] private GridAnimationSettings animSettings;
 
-    private int jumpCount;
+    [Header("Powers")]
+    [SerializeField] private Power jumpPower;
+    [SerializeField] private Power cleanPower;
+    [SerializeField] private Power growUpPower;
+    [SerializeField] private Power nonePower;
+
+    private Dictionary<Powers, Power> powers;
+
     private int jumpInUsing = 0;
+    private bool growUp = false;
 
     public HexagonCase selectedCase { private set; get; } = null;
     public List<Hexagon> selectableCases { private set; get; } = new();
@@ -33,12 +49,35 @@ public class HexagonGrid : MonoBehaviour
 
     private void Start()
     {
+        // POWERS
+        powers = new(){
+            { Powers.Clean, cleanPower },
+            { Powers.Jump, jumpPower },
+            { Powers.GrowUp, growUpPower },
+            { Powers.None, nonePower },
+        };
+
+        jumpPower.Init(this, Jump);
+        cleanPower.Init(this, Clean);
+        growUpPower.Init(this, GrowUp);
+
+        foreach (Power power in powers.Values)
+        {
+            power.Show(false);
+        }
+
+        foreach (Powers power in GameManager.Powers)
+        {
+            powers[power].Show(true);
+        }
+        
+
+        // GRID
         CreateGrid();
 
         ResetDisplay();
 
         score = ScoreManager.instance;
-        jumpCount = 3;
         bag.AddEquiCount(12);
     }
 
@@ -49,6 +88,15 @@ public class HexagonGrid : MonoBehaviour
         if (!canClick) return;
 
         if (!selectableCases.Contains(_case.Hexagon) && _case != selectedCase) return;
+
+        if (growUp)
+        {
+            _case.NextLevel();
+            growUp = false;
+            growUpPower.RemoveCount();
+            StartCoroutine(EndTurn());
+            return;
+        }
 
         if (GameManager.GameMode.CanCombineOnes && selectedCase != null && selectedCase.Number == 1 && _case.Number == 1)//Combine 2 1
         {
@@ -73,6 +121,7 @@ public class HexagonGrid : MonoBehaviour
             //Use un jump si la nouvelle case n'est pas voisine de l'actuelle.
             if (!_case.Hexagon.IsNeighbours(selectedCase.Hexagon)) jumpInUsing++;
         }
+
         selectedCase = _case;
 
         MakeNeighboursSelectables();
@@ -80,6 +129,13 @@ public class HexagonGrid : MonoBehaviour
 
     public void Undo()
     {
+        if (growUp)
+        {
+            growUp = false;
+            ResetDisplay();
+            return;
+        }
+
         if (pathCases.Count == 0)
         {
             ResetDisplay();
@@ -104,16 +160,63 @@ public class HexagonGrid : MonoBehaviour
         SelectAllNumbers(selectedCase.Number + 1);
     }
 
+    public void Clean()
+    {
+        selectedCase = null;
+        pathCases.Clear();
+        selectableCases = new();
+
+        cleanPower.RemoveCount();
+
+        foreach (var _case in cases.Keys)
+        {
+            if (cases[_case].Number <= 3)
+            {
+                bag.Add(cases[_case].Kill());//Remet le chiffre dans le "sac"
+            }
+        }
+
+        StartCoroutine(FallingAnim());
+    }
+
+    public void GrowUp()
+    {
+        selectableCases = null;
+        pathCases.Clear();
+        selectableCases = new();
+
+        foreach (Hexagon _id in cases.Keys)
+        {
+            if (cases[_id].Number <= score.MaxNumber) selectableCases.Add(_id);
+        }
+
+        growUp = true;
+        onUpdateDisplay();
+    }
+
     #endregion
+
+    public Power PowerFactory(Powers _type)
+    {
+        switch (_type)
+        {
+            case Powers.Jump:
+                return jumpPower;
+
+            case Powers.Clean:
+                return cleanPower;
+
+            case Powers.GrowUp:
+                return growUpPower;
+        }
+
+        return null;
+    }
 
     private void OnEndTurn()
     {
-        jumpCount -= jumpInUsing;
-
-        if (score.AddScore(selectedCase.Number))
-        {
-            jumpCount++;
-        }
+        score.AddScore(selectedCase.Number);
+        jumpPower.RemoveCount(jumpInUsing);
     }
 
     private IEnumerator EndTurn()
@@ -127,8 +230,13 @@ public class HexagonGrid : MonoBehaviour
             bag.Add(cases[_hex].Kill());//Remet le chiffre dans le "sac"
         }
 
-        selectedCase.NextLevel();
+        selectedCase?.NextLevel();
 
+        yield return StartCoroutine(FallingAnim());
+    }
+
+    private IEnumerator FallingAnim()
+    {
         MakeCaseFalling();
 
         yield return new WaitForSeconds(0.25f);
@@ -251,5 +359,5 @@ public class HexagonGrid : MonoBehaviour
     }
 
     public GridAnimationSettings AnimSettings => animSettings;
-    public int JumpRemaining => jumpCount - jumpInUsing;
+    public int JumpRemaining => jumpPower.Count - jumpInUsing;
 }
