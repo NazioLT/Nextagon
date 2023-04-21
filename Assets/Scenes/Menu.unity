@@ -1469,6 +1469,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1127788703}
   m_CullTransparentMesh: 1
+--- !u!1 &1137810827
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1137810828}
+  - component: {fileID: 1137810829}
+  m_Layer: 5
+  m_Name: Power Choosed
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1137810828
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137810827}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2783698704533081691}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 300}
+  m_SizeDelta: {x: 0, y: 200}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &1137810829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137810827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1151072193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,7 +1570,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 100}
-  m_SizeDelta: {x: 200, y: 200}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1151072195
 MonoBehaviour:
@@ -1552,19 +1615,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1151072196}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8513980020986237109}
-        m_TargetAssemblyTypeName: Nazio_LT.Tools.UI.UIManager, com.nazio_lt.n-ui
-        m_MethodName: MainPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   label: {fileID: 1815031644}
   labelColorChange: 0
   labelColor:
@@ -3705,6 +3756,7 @@ RectTransform:
   - {fileID: 706943930}
   - {fileID: 672957124}
   - {fileID: 1151072194}
+  - {fileID: 1137810828}
   m_Father: {fileID: 4142675010667348642}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4453,6 +4505,9 @@ MonoBehaviour:
   - button: {fileID: 706943931}
     type: 3
   mainMenu: {fileID: 8513980020986237110}
+  removeButton: {fileID: 7551056120608678656, guid: bcfbd01d6fd67694d861d0195c436883, type: 3}
+  returnToMenuButton: {fileID: 1151072195}
+  buttonParents: {fileID: 1137810828}
 --- !u!114 &8177064520247494173
 MonoBehaviour:
   m_ObjectHideFlags: 0

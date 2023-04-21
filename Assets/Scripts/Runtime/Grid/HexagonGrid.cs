@@ -93,6 +93,7 @@ public class HexagonGrid : MonoBehaviour
         {
             _case.NextLevel();
             growUp = false;
+            growUpPower.RemoveCount();
             StartCoroutine(EndTurn());
             return;
         }
@@ -183,8 +184,6 @@ public class HexagonGrid : MonoBehaviour
         selectableCases = null;
         pathCases.Clear();
         selectableCases = new();
-
-        growUpPower.RemoveCount();
 
         foreach (Hexagon _id in cases.Keys)
         {

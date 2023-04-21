@@ -21,4 +21,9 @@ public class MainMenu : MonoBehaviour
         gameMode = _gameMode;
         menu.SwitchPanel("Powers");
     }
+
+    public void Back()
+    {
+        menu.MainPanel();
+    }
 }
