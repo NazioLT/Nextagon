@@ -215,7 +215,8 @@ public class HexagonGrid : MonoBehaviour
 
     private void OnEndTurn()
     {
-        score.AddScore(selectedCase.Number);
+        if(selectedCase)
+            score.AddScore(selectedCase.Number);
         jumpPower.RemoveCount(jumpInUsing);
     }
 
